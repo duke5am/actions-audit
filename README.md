@@ -514,4 +514,4 @@ Copyright (c) 2025 duke5am
 
 ---
 
-→ **CI/CD Pipeline Reliability Pack**: <!-- GUMROAD-LINK -->
+→ **[CI/CD Pipeline Reliability Pack](https://duke5am.gumroad.com/l/07-cicd-pipeline-pack)** — $29 on Gumroad <!-- GUMROAD-LINK -->
