@@ -1,0 +1,21 @@
+# workflow_run jobs run with a write token in the base repository; checking out
+# the triggering run's head commit executes untrusted code with that token.
+name: Post-CI Publish
+
+on:
+  workflow_run:
+    workflows: ["Hardened CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+      - run: npm ci && npm run release

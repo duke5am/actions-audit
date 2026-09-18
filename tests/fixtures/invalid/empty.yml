@@ -1,0 +1,2 @@
+# Only comments, no YAML content: must be reported as a parse error, not as a
+# clean workflow.

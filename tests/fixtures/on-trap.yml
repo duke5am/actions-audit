@@ -1,0 +1,18 @@
+# Minimal workflow whose only point is the `on:` key spelling. Parsed with a
+# YAML 1.1 reader the unquoted key below becomes the boolean True.
+name: On Trap
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - run: echo build

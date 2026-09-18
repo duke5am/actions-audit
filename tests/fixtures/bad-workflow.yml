@@ -1,0 +1,56 @@
+# Deliberately bad workflow. Fixture values are obviously fake (CHANGEME,
+# example-token-1234) and must stay that way.
+name: Risky PR Pipeline
+
+on:
+  pull_request:
+  workflow_run:
+    workflows: ["Risky PR Pipeline"]
+    types: [completed]
+
+permissions: write-all
+
+jobs:
+  pr-gate:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+          token: ${{ secrets.CHANGEME_DEPLOY_TOKEN }}
+
+      - name: Audit PR title
+        run: |
+          echo "PR title: ${{ github.event.pull_request.title }}"
+          echo "branch: ${{ github.head_ref }}"
+
+      - name: Publish results
+        if: always()
+        continue-on-error: true
+        run: npm publish --access public
+
+  release:
+    runs-on: self-hosted
+    needs: pr-gate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - uses: docker/build-push-action@v6
+        with:
+          push: true
+      - name: Upload release
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.CHANGEME_RELEASE_TOKEN }}
+      - name: Warm caches
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: npm-static

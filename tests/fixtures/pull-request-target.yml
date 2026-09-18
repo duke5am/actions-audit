@@ -1,0 +1,15 @@
+# The classic privilege-escalation footgun: pull_request_target (write token +
+# secrets) checking out and running the pull request's own code.
+name: PR Preview
+
+on: pull_request_target
+
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+      - name: Build the PR
+        run: npm ci && npm run build
